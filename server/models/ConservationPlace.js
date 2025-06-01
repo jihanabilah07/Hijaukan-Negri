@@ -7,7 +7,6 @@ const conservationPlaceSchema = new mongoose.Schema({
         latitude: { type: Number, required: true },
         longitude: { type: Number, required: true }
     },
-    image: { type: String, default: '/images/default-conservation.jpg' }, // Default image path
     status: {
         type: String,
         enum: ['Aktif', 'Dalam Pemeliharaan', 'Ditutup'],

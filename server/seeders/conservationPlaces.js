@@ -10,7 +10,6 @@ const conservationPlaces = [
             latitude: 5.5214,
             longitude: 95.3173
         },
-        image: '/images/conservation/mangrove-ujong-pancu.jpg',
         status: "Aktif"
     },
     {
@@ -20,7 +19,6 @@ const conservationPlaces = [
             latitude: 5.4481,
             longitude: 95.7275
         },
-        image: '/images/conservation/hutan-seulawah.jpg',
         status: "Aktif"
     },
     {
@@ -30,7 +28,6 @@ const conservationPlaces = [
             latitude: 5.3969,
             longitude: 95.7106
         },
-        image: '/images/conservation/tahura-pocut.jpg',
         status: "Dalam Pemeliharaan"
     },
     {
@@ -40,7 +37,6 @@ const conservationPlaces = [
             latitude: 4.4833,
             longitude: 97.9167
         },
-        image: '/images/conservation/mangrove-kuala-langsa.jpg',
         status: "Aktif"
     },
     {
@@ -50,7 +46,6 @@ const conservationPlaces = [
             latitude: 4.6333,
             longitude: 96.8333
         },
-        image: '/images/conservation/pinus-paya-tumpi.jpg',
         status: "Dalam Pemeliharaan"
     }
 ];

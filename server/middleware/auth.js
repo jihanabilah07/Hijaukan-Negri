@@ -8,7 +8,16 @@ const verifyToken = (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decoded.user.id;
+    
+    if (!decoded.user || !decoded.user.id) {
+      return res.status(401).json({ message: "Token tidak valid: data user tidak lengkap" });
+    }
+
+    // Set user data in request
+    req.user = {
+      id: decoded.user.id
+    };
+    
     next();
   } catch (error) {
     console.error('Token verification error:', error);

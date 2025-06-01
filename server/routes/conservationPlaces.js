@@ -1,42 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const ConservationPlace = require('../models/ConservationPlace');
-const multer = require('multer');
-const path = require('path');
-
-// Multer Configuration
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, `conservation-${Date.now()}${path.extname(file.originalname)}`);
-    }
-});
-
-const upload = multer({
-    storage,
-    fileFilter: (req, file, cb) => {
-        const filetypes = /jpeg|jpg|png/;
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = filetypes.test(file.mimetype);
-        if (extname && mimetype) {
-            cb(null, true);
-        } else {
-            cb(new Error('Hanya gambar dengan format JPG, JPEG, atau PNG yang diperbolehkan'));
-        }
-    }
-});
-
-// Middleware to handle Multer errors
-const uploadMiddleware = (req, res, next) => {
-    upload.single('image')(req, res, function (err) {
-        if (err instanceof multer.MulterError || err) {
-            return res.status(400).json({ error: err.message });
-        }
-        next();
-    });
-};
 
 // Get all conservation places (list only)
 router.get('/', async (req, res) => {
@@ -55,7 +19,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const place = await ConservationPlace.findById(req.params.id)
-            .select('name location coordinates mapImage status');
+            .select('name location coordinates status');
         if (!place) {
             return res.status(404).json({ error: 'Tempat konservasi tidak ditemukan' });
         }
@@ -67,7 +31,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create a new conservation place
-router.post('/', uploadMiddleware, async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const {
             name,
@@ -80,13 +44,10 @@ router.post('/', uploadMiddleware, async (req, res) => {
             plantTypes
         } = req.body;
 
-        const image = req.file ? `/uploads/${req.file.filename}` : null;
-
         const newPlace = new ConservationPlace({
             name,
             description,
             location,
-            image,
             coordinates: {
                 latitude: parseFloat(latitude),
                 longitude: parseFloat(longitude)
@@ -108,7 +69,7 @@ router.post('/', uploadMiddleware, async (req, res) => {
 });
 
 // Update a conservation place
-router.put('/:id', uploadMiddleware, async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
         const {
             name,
@@ -134,10 +95,6 @@ router.put('/:id', uploadMiddleware, async (req, res) => {
             plantTypes: plantTypes ? JSON.parse(plantTypes) : [],
             updatedAt: Date.now()
         };
-
-        if (req.file) {
-            updateData.image = `/uploads/${req.file.filename}`;
-        }
 
         const place = await ConservationPlace.findByIdAndUpdate(
             req.params.id,
